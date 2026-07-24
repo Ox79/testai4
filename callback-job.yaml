@@ -1,19 +1,18 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
-  name: testflo-probe
-  namespace: default
+  name: testflo-child
+  namespace: argocd
 spec:
-  replicas: 0
-  selector:
-    matchLabels:
-      app: testflo-probe
-  template:
-    metadata:
-      labels:
-        app: testflo-probe
-    spec:
-      containers:
-      - name: probe
-        image: alpine:3.19
-        command: ["/bin/sh", "-c", "sleep 3600"]
+  project: default
+  source:
+    repoURL: https://github.com/Ox79/testai.git
+    targetRevision: main
+    path: child
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
