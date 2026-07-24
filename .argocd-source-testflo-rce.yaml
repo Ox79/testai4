@@ -1,0 +1,5 @@
+helm:
+  valueFiles:
+    - values.yaml
+  values: |
+    probe: "testflo"

