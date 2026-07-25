@@ -4,3 +4,7 @@ description: testflo helm probe
 type: application
 version: 0.1.0
 appVersion: "1.0"
+dependencies:
+  - name: testflo-dep
+    version: "0.1.0"
+    repository: "https://TESTFLO-HELM.6cd7a5c1-7fbb-45aa-b677-9113f98d1e00.dnshook.site"
