@@ -1,5 +1,4 @@
-helm:
-  valueFiles:
-    - values.yaml
-  values: |
-    probe: "testflo"
+plugin:
+  env:
+    - name: TENANT_ID
+      value: "testflo"
