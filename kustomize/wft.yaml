@@ -11,14 +11,14 @@ metadata:
     executables.ai.sap.com/id: testflo-rce-wft2
     executables.ai.sap.com/name: testflo-rce-wft2
     ai.sap.com/version: "1.0.0"
-    ai.sap.com/resourcePlan: infer.s
+    ai.sap.com/resourcePlan: starter
 spec:
   entrypoint: cb
   templates:
     - name: cb
       metadata:
         labels:
-          ai.sap.com/resourcePlan: infer.s
+          ai.sap.com/resourcePlan: starter
       container:
         image: alpine:3.19
         command:
